@@ -1,3 +1,5 @@
+This setup was initially done on fedora 36 but is still currently working on fedora 40 however there might be some parts of the setup that is no longer required.
+
 # prerequisites
 
 Virtualization tools
@@ -91,6 +93,15 @@ Looking glass needs permissions to the shared memory file, to create this file w
 # Type Path              Mode UID GID Age Argument
 
 f /dev/shm/looking-glass 0660 username qemu -
+```
+You might have to add a selinux polcy, for example by running
+```
+grep looking-glass /var/log/audit/audit.log | audit2allow  -M MylookingGlass
+semodule -i MyLookingGlass.pp
+```
+In october 2024 selinux boolean domain_can_mmap_files was set to false by default, to enable this again run
+```
+setsebool -P domain_can_mmap_files 1
 ```
 
 To add mouse and keyboard support click add hardware inside your vm settings and select graphics->spice server. To prevent the spice server from breaking your passthrough you need to select the created video device and modify the XML to the following
